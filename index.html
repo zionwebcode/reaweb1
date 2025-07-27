@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blossom Boutique - Start</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      background-color: #ffe4f0;
+      overflow: hidden;
+      color: #6d2e46;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    .center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    button {
+      background: #f06292;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .loading-bar {
+      width: 200px;
+      background: #ffd6e8;
+      border: 2px solid #f8a5c2;
+      margin-top: 20px;
+      display: none;
+    }
+    .loading-fill {
+      height: 20px;
+      background: #f06292;
+      width: 0%;
+    }
+    #loadingText {
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+  <div class="center">
+    <h1>REA STORE 🌸</h1>
+    <button id="startBtn">Start</button>
+    <div class="loading-bar" id="loadingBar">
+      <div class="loading-fill" id="loadingFill"></div>
+    </div>
+    <p id="loadingText">0%</p>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const loadingBar = document.getElementById('loadingBar');
+    const loadingFill = document.getElementById('loadingFill');
+    const loadingText = document.getElementById('loadingText');
+
+    startBtn.addEventListener('click', () => {
+      startBtn.style.display = 'none';
+      loadingBar.style.display = 'block';
+      loadingText.style.display = 'block';
+
+      let percent = 0;
+      const interval = setInterval(() => {
+        percent++;
+        loadingFill.style.width = percent + '%';
+        loadingText.textContent = percent + '%';
+
+        if (percent >= 100) {
+          clearInterval(interval);
+          window.location.href = 'flower-shop.html';
+        }
+      }, 30);
+    });
+
+    // Love-shaped particles
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const hearts = [];
+    for (let i = 0; i < 80; i++) {
+      hearts.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 20 + 10,
+        speed: Math.random() * 1 + 0.5,
+        opacity: Math.random()
+      });
+    }
+
+    function drawHeart(x, y, size, opacity) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(size / 100, size / 100);
+      ctx.beginPath();
+      ctx.moveTo(75, 40);
+      ctx.bezierCurveTo(75, 37, 70, 25, 50, 25);
+      ctx.bezierCurveTo(20, 25, 20, 62.5, 20, 62.5);
+      ctx.bezierCurveTo(20, 80, 40, 102, 75, 120);
+      ctx.bezierCurveTo(110, 102, 130, 80, 130, 62.5);
+      ctx.bezierCurveTo(130, 62.5, 130, 25, 100, 25);
+      ctx.bezierCurveTo(85, 25, 75, 37, 75, 40);
+      ctx.closePath();
+      ctx.fillStyle = `rgba(255, 105, 180, ${opacity})`;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function animateHearts() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let h of hearts) {
+        drawHeart(h.x, h.y, h.size, h.opacity);
+        h.y += h.speed;
+        if (h.y > canvas.height + 20) {
+          h.y = -20;
+          h.x = Math.random() * canvas.width;
+        }
+      }
+      requestAnimationFrame(animateHearts);
+    }
+    animateHearts();
+  </script>
+</body>
+</html>
